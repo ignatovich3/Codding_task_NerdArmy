@@ -17,33 +17,21 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 import crud
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+from database import get_db
+from fastapi import FastAPI
+import auth  # <- jeśli masz auth.py w folderze "routes"
+from database import get_db
+from auth import router as auth_router
+
+
+
 
 app = FastAPI()
+app.include_router(auth_router, tags=["auth"])
 
 
-@app.post("/register", response_model=UserResponse)
-def register(user: UserCreate, db: Session = Depends(get_db)):
-    existing_user = crud.get_user_by_username(db, user.username)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-
-    hashed_pw = hash_password(user.password)
-    new_user = User(
-        username=user.username,
-        email=user.email,
-        hashed_password=hashed_pw
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
-
-@app.post("/login", response_model=UserResponse)
-def login(user: UserLogin, db: Session = Depends(get_db)):
-    db_user = crud.authenticate_user(db, user.username, user.password)
-    if not db_user:
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-    return db_user
 @app.get("/flowers", response_model=list[schemas.Flower])
 def read_flowers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_flowers(db, skip=skip, limit=limit)
@@ -72,11 +60,12 @@ def delete_flower(flower_id: int, db: Session = Depends(get_db)):
     return {"detail": "Deleted"}
 
 
-@app.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = crud.get_user_by_username(db, form_data.username)
-    if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    token = create_access_token({"sub": user.username})
-    return {"access_token": token, "token_type": "bearer"}
+
+@app.get("/db-test")
+def db_test(db: Session = Depends(get_db)):
+    try:
+        db.execute("SELECT 1")
+        return {"status": "Połączenie działa"}
+    except Exception as e:
+        return {"error": str(e)}
