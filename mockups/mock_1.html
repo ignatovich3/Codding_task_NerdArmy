@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌸 Inwentaryzacja Kwiatów</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+  <!-- Header -->
+  <header class="bg-green-700 text-white p-4 flex justify-between items-center shadow-md">
+    <h1 class="text-xl font-bold">🌸 Inwentaryzacja Kwiatów</h1>
+    <nav class="space-x-4">
+      <button onclick="showView('home')" class="hover:underline">Strona główna</button>
+      <button onclick="showView('login')" class="hover:underline">Zaloguj się</button>
+      <button onclick="showView('register')" class="hover:underline">Rejestracja</button>
+      <button onclick="showView('dashboard')" class="hover:underline">Dashboard</button>
+      <button onclick="showView('add')" class="hover:underline">Dodaj kwiat</button>
+    </nav>
+  </header>
+
+  <main class="p-6 max-w-5xl mx-auto">
+
+    <!-- Strona główna -->
+    <section id="home">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Lista publiczna</h2>
+      <p class="mb-4 text-gray-600">Zaloguj się, aby dodawać lub edytować kwiaty.</p>
+
+      <div class="flex gap-4 mb-4">
+        <select class="p-2 border rounded w-1/2">
+          <option>Kategoria</option>
+        </select>
+        <select class="p-2 border rounded w-1/2">
+          <option>Status</option>
+        </select>
+      </div>
+
+      <table class="w-full table-auto bg-white shadow rounded overflow-hidden">
+        <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="p-3 text-left">Nazwa</th>
+            <th class="p-3 text-left">Kategoria</th>
+            <th class="p-3 text-left">Ilość</th>
+            <th class="p-3 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t">
+            <td class="p-3">Róża</td>
+            <td class="p-3">Piękny</td>
+            <td class="p-3">5</td>
+            <td class="p-3">Dostępny</td>
+          </tr>
+          <tr class="border-t">
+            <td class="p-3">Storczyk</td>
+            <td class="p-3">Rzadki</td>
+            <td class="p-3">2</td>
+            <td class="p-3">Mało</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Logowanie -->
+    <section id="login" class="hidden flex flex-col items-center mt-12">
+      <div class="bg-white shadow p-8 rounded w-full max-w-sm">
+        <h2 class="text-xl font-semibold mb-6 text-center text-gray-800">Zaloguj się</h2>
+        <input type="email" placeholder="Email" class="p-2 border w-full mb-3 rounded" />
+        <input type="password" placeholder="Hasło" class="p-2 border w-full mb-4 rounded" />
+        <button onclick="showView('dashboard')" class="bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded">
+          Zaloguj
+        </button>
+      </div>
+    </section>
+
+    <!-- Rejestracja -->
+    <section id="register" class="hidden flex flex-col items-center mt-12">
+      <div class="bg-white shadow p-8 rounded w-full max-w-sm">
+        <h2 class="text-xl font-semibold mb-6 text-center text-gray-800">Rejestracja</h2>
+        <input type="email" placeholder="Email" class="p-2 border w-full mb-3 rounded" />
+        <input type="password" placeholder="Hasło" class="p-2 border w-full mb-3 rounded" />
+        <input type="password" placeholder="Potwierdź hasło" class="p-2 border w-full mb-4 rounded" />
+        <button onclick="showView('dashboard')" class="bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded">
+          Zarejestruj się
+        </button>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="hidden">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Moje Kwiaty</h2>
+      <table class="w-full table-auto bg-white shadow rounded overflow-hidden">
+        <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="p-3 text-left">Nazwa</th>
+            <th class="p-3 text-left">Kategoria</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3 text-left">Ilość</th>
+            <th class="p-3 text-left">Akcje</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t">
+            <td class="p-3">Orchidea</td>
+            <td class="p-3">Chroniony</td>
+            <td class="p-3">Mało</td>
+            <td class="p-3">3</td>
+            <td class="p-3 space-x-2">
+              <button onclick="showView('add')" class="bg-yellow-400 text-white px-2 py-1 rounded">Edytuj</button>
+              <button class="bg-red-500 text-white px-2 py-1 rounded">Usuń</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Dodawanie / Edycja -->
+    <section id="add" class="hidden">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Dodaj / Edytuj Kwiat</h2>
+      <input type="text" placeholder="Nazwa kwiatu" class="p-2 border w-full mb-3 rounded" />
+      <textarea placeholder="Opis" class="p-2 border w-full mb-3 rounded"></textarea>
+      <select class="p-2 border w-full mb-3 rounded">
+        <option>Kategoria</option>
+        <option>Piękny</option>
+        <option>Rzadki</option>
+        <option>Chroniony</option>
+      </select>
+      <input type="number" placeholder="Ilość" class="p-2 border w-full mb-3 rounded" />
+      <select class="p-2 border w-full mb-3 rounded">
+        <option>Status zapasu</option>
+        <option>Dostępny</option>
+        <option>Mało</option>
+        <option>Brak</option>
+      </select>
+      <input type="date" class="p-2 border w-full mb-3 rounded" />
+      <button onclick="showView('dashboard')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Zapisz</button>
+    </section>
+
+  </main>
+
+  <script>
+    function showView(id) {
+      document.querySelectorAll("main > section").forEach(section => {
+        section.classList.add("hidden");
+      });
+      document.getElementById(id).classList.remove("hidden");
+    }
+  </script>
+
+</body>
+</html>
