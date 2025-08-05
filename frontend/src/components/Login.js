@@ -1,57 +1,52 @@
+// Login.js
 import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api";
 
 const Login = () => {
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
-      const token = await loginUser(form);
-      localStorage.setItem("token", token);
-      navigate("/flowers");
-    } catch (err) {
-      alert("Nieprawidłowe dane logowania");
+      const response = await axios.post("http://127.0.0.1:8000/login", {
+        username,
+        password,
+      });
+
+      // ✅ Zapisz token do localStorage
+      localStorage.setItem("token", response.data.access_token);
+
+      // ✅ Przekieruj na listę kwiatów
+      navigate("/list");
+    } catch (error) {
+      alert("Błąd logowania");
+      console.error(error);
     }
   };
 
   return (
-    <div className="flex justify-center items-start pt-20 min-h-[calc(100vh-80px)] bg-gray-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg p-8 w-full max-w-md"
-      >
-        <h2 className="text-2xl font-semibold text-center mb-6">Zaloguj się</h2>
-
+    <div className="form-container">
+      <h2>Logowanie</h2>
+      <form onSubmit={handleLogin}>
         <input
           type="text"
-          name="username"
-          placeholder="Email"
-          className="w-full mb-4 px-4 py-2 border rounded"
-          value={form.username}
-          onChange={handleChange}
+          placeholder="Nazwa użytkownika"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
         />
-
         <input
           type="password"
-          name="password"
           placeholder="Hasło"
-          className="w-full mb-4 px-4 py-2 border rounded"
-          value={form.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
         />
-
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-        >
-          Zaloguj
-        </button>
+        <button type="submit">Zaloguj się</button>
       </form>
     </div>
   );

@@ -1,28 +1,30 @@
-import axios from 'axios';
+// src/api.js
+import axios from "axios";
 
-const API = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+const api = axios.create({
+  baseURL: "http://127.0.0.1:8000",
 });
 
-// Dodaje token do każdego zapytania, jeśli istnieje
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+// Dołącz token JWT do każdego żądania (jeśli istnieje)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-// Auth
-export const registerUser = (userData) => API.post('/register', userData);
+// ✅ POBIERANIE KWIATÓW
+export const fetchFlowers = () => api.get("/flowers");
 
-export const loginUser = (data) => API.post('/login', data);
+// ✅ DODAWANIE KWIATU
+export const createFlower = (flowerData) => api.post("/flowers", flowerData);
 
-// Flowers
-export const fetchFlowers = () => API.get('/flowers');
-export const createFlower = (flowerData) => API.post('/flowers', flowerData);
-export const deleteFlower = (id) => API.delete(`/flowers/${id}`);
-export const updateFlower = (id, data) => API.put(`/flowers/${id}`, data);
-export const getFlower = (id) => API.get(`/flowers/${id}`);
+// ✅ USUWANIE KWIATU
+export const deleteFlower = (id) => api.delete(`/flowers/${id}`);
 
-export default API;
+// ✅ REJESTRACJA UŻYTKOWNIKA
+export const registerUser = (userData) => api.post("/register", userData);
+
+// ✅ LOGOWANIE (zwraca token)
+export const loginUser = (credentials) => api.post("/login", credentials);

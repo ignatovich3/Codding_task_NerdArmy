@@ -24,6 +24,7 @@ from fastapi import FastAPI
 import auth  # <- jeśli masz auth.py w folderze "routes"
 from database import get_db
 from auth import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
 
 
@@ -31,6 +32,13 @@ from auth import router as auth_router
 app = FastAPI()
 app.include_router(auth_router, tags=["auth"])
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3001"],  # frontend
+    allow_credentials=True,
+    allow_methods=["*"],   # <- pozwól na POST, GET, OPTIONS itd.
+    allow_headers=["*"],   # <- potrzebne do Authorization itp.
+)
 
 @app.get("/flowers", response_model=list[schemas.Flower])
 def read_flowers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
