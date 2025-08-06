@@ -9,9 +9,11 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🌸 Witaj w aplikacji Kwiaty!</Text>
+
       <Button title="Zaloguj się" onPress={() => router.push('/login')} />
       <Button title="Zarejestruj się" onPress={() => router.push('/register')} />
       <Button title="Zobacz listę kwiatów" onPress={() => router.push('/flowers')} />
+      <Button title="Dodaj kwiat" onPress={() => router.push('/FlowerFormScreen')} />
     </View>
   );
 }
