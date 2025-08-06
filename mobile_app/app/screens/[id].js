@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet, Text } from 'react-native';
+import {
+  View,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+  Text,
+  Platform,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/utils/api';
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function EditFlowerScreen() {
-  const { id } = useLocalSearchParams(); // ← pobiera ID kwiata z URL
+  const { id } = useLocalSearchParams();
   const router = useRouter();
 
   const [name, setName] = useState('');
@@ -13,6 +23,8 @@ export default function EditFlowerScreen() {
   const [category, setCategory] = useState('');
   const [quantity, setQuantity] = useState('');
   const [status, setStatus] = useState('');
+  const [dateAdded, setDateAdded] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     const fetchFlower = async () => {
@@ -30,6 +42,9 @@ export default function EditFlowerScreen() {
         setCategory(flower.category);
         setQuantity(flower.quantity.toString());
         setStatus(flower.status);
+        if (flower.date_added) {
+          setDateAdded(new Date(flower.date_added));
+        }
       } catch (error) {
         console.error('Błąd ładowania kwiatu:', error);
         Alert.alert('Błąd', 'Nie udało się załadować danych kwiatu.');
@@ -39,23 +54,34 @@ export default function EditFlowerScreen() {
     fetchFlower();
   }, [id]);
 
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || dateAdded;
+    setShowDatePicker(Platform.OS === 'ios');
+    setDateAdded(currentDate);
+  };
+
   const handleUpdate = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      await api.put(`/flowers/${id}`, {
-        name,
-        description,
-        category,
-        quantity: parseInt(quantity),
-        status,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await api.put(
+        `/flowers/${id}`,
+        {
+          name,
+          description,
+          category,
+          quantity: parseInt(quantity),
+          status,
+          date_added: dateAdded.toISOString(),
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       Alert.alert('Sukces', 'Zmieniono dane kwiatu!');
-      router.back(); // wraca do poprzedniego ekranu (lista)
+      router.back();
     } catch (error) {
       console.error('Błąd zapisu:', error);
       Alert.alert('Błąd', 'Nie udało się zapisać zmian.');
@@ -65,12 +91,61 @@ export default function EditFlowerScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Edytuj Kwiat</Text>
-      <TextInput placeholder="Nazwa" value={name} onChangeText={setName} style={styles.input} />
-      <TextInput placeholder="Opis" value={description} onChangeText={setDescription} style={styles.input} />
-      <TextInput placeholder="Kategoria" value={category} onChangeText={setCategory} style={styles.input} />
-      <TextInput placeholder="Ilość" value={quantity} onChangeText={setQuantity} keyboardType="numeric" style={styles.input} />
-      <TextInput placeholder="Status" value={status} onChangeText={setStatus} style={styles.input} />
-      <Button title="Zapisz zmiany" onPress={handleUpdate} />
+
+      <TextInput
+        placeholder="Nazwa"
+        value={name}
+        onChangeText={setName}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Opis"
+        value={description}
+        onChangeText={setDescription}
+        style={styles.input}
+      />
+
+      <Text style={styles.label}>Kategoria</Text>
+      <Picker
+        selectedValue={category}
+        onValueChange={(value) => setCategory(value)}
+        style={styles.input}
+      >
+        <Picker.Item label="Wybierz kategorię..." value="" />
+        <Picker.Item label="Piękny" value="Piękny" />
+        <Picker.Item label="Rzadki" value="Rzadki" />
+        <Picker.Item label="Chroniony" value="Chroniony" />
+      </Picker>
+
+      <TextInput
+        placeholder="Ilość"
+        value={quantity}
+        onChangeText={setQuantity}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Status"
+        value={status}
+        onChangeText={setStatus}
+        style={styles.input}
+      />
+
+      <Text style={styles.label}>Data dodania: {dateAdded.toLocaleDateString()}</Text>
+      <Button title="Zmień datę" onPress={() => setShowDatePicker(true)} />
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={dateAdded}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+
+      <View style={{ marginTop: 20 }}>
+        <Button title="ZAPISZ ZMIANY" onPress={handleUpdate} />
+      </View>
     </View>
   );
 }
@@ -90,5 +165,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  label: {
+    marginBottom: 5,
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
