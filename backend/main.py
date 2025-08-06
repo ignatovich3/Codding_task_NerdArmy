@@ -67,6 +67,20 @@ def delete_flower(flower_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Flower not found")
     return {"detail": "Deleted"}
 
+@app.put("/flowers/{flower_id}", response_model=schemas.Flower)
+def update_flower(
+    flower_id: int,
+    flower_data: schemas.FlowerCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    db_flower = crud.get_flower(db, flower_id)
+    if db_flower is None:
+        raise HTTPException(status_code=404, detail="Flower not found")
+
+    updated_flower = crud.update_flower(db=db, flower_id=flower_id, flower_data=flower_data)
+    return updated_flower
+
 
 
 

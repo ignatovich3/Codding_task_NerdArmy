@@ -4,6 +4,11 @@ from schemas import FlowerCreate
 from models import User
 from passlib.hash import bcrypt
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session
+import models
+import schemas
+
+
 
 def get_flowers(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Flower).offset(skip).limit(limit).all()
@@ -48,3 +53,18 @@ def authenticate_user(db: Session, username: str, password: str):
     if not bcrypt.verify(password, user.hashed_password):
         return None
     return user
+
+def update_flower(db: Session, flower_id: int, flower_data: schemas.FlowerCreate):
+    db_flower = db.query(models.Flower).filter(models.Flower.id == flower_id).first()
+    if db_flower is None:
+        return None
+
+    db_flower.name = flower_data.name
+    db_flower.description = flower_data.description
+    db_flower.category = flower_data.category
+    db_flower.quantity = flower_data.quantity
+    db_flower.status = flower_data.status
+
+    db.commit()
+    db.refresh(db_flower)
+    return db_flower
