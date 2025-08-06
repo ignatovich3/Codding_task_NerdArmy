@@ -1,66 +1,65 @@
-// app/screens/LoginScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import api from '@/utils/api';
+import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import api from '@/utils/api';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
 
   const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert('Błąd', 'Wprowadź nazwę użytkownika i hasło.');
+      return;
+    }
+
     try {
-      const response = await api.post('/auth/login/', { email, password });
-      const token = response.data.token;
-      await AsyncStorage.setItem('token', token);
-      router.replace('/(tabs)');
-    } catch (error) {
-      Alert.alert('Błąd logowania', 'Nieprawidłowe dane logowania');
+      const response = await api.post('/login', {
+        username: username.trim(),
+        password: password.trim(),
+      });
+
+      const { access_token } = response.data;
+      await AsyncStorage.setItem('token', access_token);
+
+      Alert.alert('Sukces', 'Zalogowano pomyślnie!');
+      // Możesz przejść dalej, np. navigation.navigate('Home');
+    } catch (error: any) {
+      console.error('Błąd logowania:', error.response?.data || error.message);
+      Alert.alert('Błąd logowania', 'Nieprawidłowe dane logowania lub błąd serwera.');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Logowanie</Text>
       <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
         style={styles.input}
         autoCapitalize="none"
       />
       <TextInput
         placeholder="Hasło"
+        secureTextEntry
         value={password}
         onChangeText={setPassword}
         style={styles.input}
-        secureTextEntry
       />
-      <Button title="Zaloguj się" onPress={handleLogin} />
+      <Button title="ZALOGUJ SIĘ" onPress={handleLogin} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-    textAlign: 'center',
+    gap: 10,
   },
   input: {
-    borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 10,
-    marginBottom: 12,
+    borderWidth: 1,
+    padding: 12,
+    borderRadius: 6,
   },
 });

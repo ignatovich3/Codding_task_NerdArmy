@@ -1,31 +1,53 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import api from '../utils/api';
+import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import api from '@/utils/api';
 
 export default function RegisterScreen() {
-  const router = useRouter();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = async () => {
+    if (!username || !email || !password) {
+      Alert.alert('Błąd', 'Wszystkie pola są wymagane.');
+      return;
+    }
+
     try {
-      await api.post('/register', { username, password });
-      Alert.alert('Sukces', 'Zarejestrowano pomyślnie');
-      router.replace('/login');
-    } catch (error) {
-      Alert.alert('Błąd rejestracji', 'Użytkownik już istnieje lub błąd serwera');
+      const response = await api.post('/register', {
+        username: username.trim(),
+        email: email.trim(),
+        password: password.trim(),
+      });
+
+      if (response.status === 200) {
+        Alert.alert('Sukces', 'Rejestracja zakończona pomyślnie!');
+        // Możesz dodać: navigation.navigate('Login');
+      } else {
+        Alert.alert('Błąd', 'Coś poszło nie tak');
+      }
+    } catch (error: any) {
+      console.error('Błąd rejestracji:', error.response?.data || error.message);
+      Alert.alert('Błąd rejestracji', 'Użytkownik już istnieje lub wystąpił błąd serwera.');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Rejestracja</Text>
       <TextInput
-        placeholder="Nazwa użytkownika"
+        placeholder="Username"
         value={username}
         onChangeText={setUsername}
         style={styles.input}
+        autoCapitalize="none"
+      />
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        style={styles.input}
+        autoCapitalize="none"
       />
       <TextInput
         placeholder="Hasło"
@@ -34,28 +56,20 @@ export default function RegisterScreen() {
         onChangeText={setPassword}
         style={styles.input}
       />
-      <Button title="Zarejestruj się" onPress={handleRegister} />
+      <Button title="ZAREJESTRUJ SIĘ" onPress={handleRegister} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
+    gap: 10,
   },
   input: {
-    borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 5,
+    borderWidth: 1,
+    padding: 12,
+    borderRadius: 6,
   },
 });
