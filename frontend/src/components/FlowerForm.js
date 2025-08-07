@@ -29,80 +29,67 @@ const FlowerForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md w-full max-w-xl"
-      >
-        <h2 className="text-2xl font-semibold mb-6">Dodaj / Edytuj Kwiat</h2>
+    <div className="centered-form-container">
+      <div className="form-box">
+        <h2>Dodaj / Edytuj Kwiat</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Nazwa kwiatu"
+            value={flower.name}
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Nazwa kwiatu"
-          value={flower.name}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        />
+          <textarea
+            name="description"
+            placeholder="Opis"
+            value={flower.description}
+            onChange={handleChange}
+            required
+          />
 
-        <textarea
-          name="description"
-          placeholder="Opis"
-          value={flower.description}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        />
+          <input
+            type="text"
+            name="category"
+            placeholder="Kategoria"
+            value={flower.category}
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          type="text"
-          name="category"
-          placeholder="Kategoria"
-          value={flower.category}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        />
+          <input
+            type="number"
+            name="quantity"
+            placeholder="Ilość"
+            value={flower.quantity}
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          type="number"
-          name="quantity"
-          placeholder="Ilość"
-          value={flower.quantity}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        />
+          <select
+            name="status"
+            value={flower.status}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Status zapasu</option>
+            <option value="Dostępny">Dostępny</option>
+            <option value="Mało">Mało</option>
+            <option value="Brak">Brak</option>
+          </select>
 
-        <select
-          name="status"
-          value={flower.status}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 border rounded"
-          required
-        >
-          <option value="">Status zapasu</option>
-          <option value="Dostępny">Dostępny</option>
-          <option value="Mało">Mało</option>
-          <option value="Brak">Brak</option>
-        </select>
+          <input
+            type="date"
+            name="date"
+            value={flower.date}
+            onChange={handleChange}
+          />
 
-        <input
-          type="date"
-          name="date"
-          value={flower.date}
-          onChange={handleChange}
-          className="w-full mb-6 px-4 py-2 border rounded"
-        />
-
-        <button
-          type="submit"
-          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-        >
-          Zapisz
-        </button>
-      </form>
+          <button type="submit">Zapisz</button>
+        </form>
+      </div>
     </div>
   );
 };

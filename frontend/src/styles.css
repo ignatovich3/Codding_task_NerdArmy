@@ -1,3 +1,8 @@
+/* RESET & BASE */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -5,6 +10,7 @@ body {
   color: #222;
 }
 
+/* HEADER i NAVBAR */
 header {
   background-color: #2e7d32;
   color: white;
@@ -33,62 +39,182 @@ nav a:hover {
   text-decoration: underline;
 }
 
-main {
-  padding: 32px 24px;
-  max-width: 1000px;
-  margin: 0 auto;
+/* GLOBAL FORM CENTERING */
+.centered-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 48px 24px 24px;
 }
 
-h2 {
-  font-size: 24px;
-  margin-bottom: 16px;
+/* FORM BOX */
+.form-box {
+  background: white;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
 }
 
-p {
-  margin-bottom: 24px;
-  color: #555;
-}
-
-select,
+/* FORM ELEMENTS */
 input,
+select,
 textarea {
-  padding: 8px;
+  padding: 10px;
   margin-bottom: 16px;
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
-  max-width: 300px;
+  font-size: 16px;
+  font-family: inherit;
+  background-color: white;
+}
+
+/* GŁÓWNE BUTTONY */
+button {
+  padding: 12px 20px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #27682a;
+}
+
+/* SPECJALNY BUTTON OUTLINE */
+button.outline {
+  background-color: transparent;
+  border: 2px solid #2e7d32;
+  color: #2e7d32;
+}
+
+button.outline:hover {
+  background-color: #e8f5e9;
+}
+
+/* BUTTONY AKCJI */
+.btn-edit {
+  background-color: #fdd835;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-edit:hover {
+  background-color: #fbc02d;
+}
+
+.btn-delete {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #c62828;
+}
+
+.btn-green {
+  background-color: #2e7d32;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-green:hover {
+  background-color: #27682a;
+}
+
+/* TYTUŁY I AKAPITY */
+h1, h2, h3 {
+  margin-top: 0;
+  color: #2e7d32;
+}
+
+p {
+  color: #555;
+  margin-bottom: 16px;
+}
+
+/* TABELA – LISTA KWIATÓW */
+.table-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  overflow-x: auto;
+}
+
+.table-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin: 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 16px;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-width: 700px;
 }
 
 th, td {
-  padding: 12px;
+  padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
 
 th {
-  background-color: #f0f0f0;
-  font-weight: bold;
+  background-color: #f9f9f9;
+  font-weight: 600;
+  color: #333;
 }
 
-button {
-  padding: 8px 16px;
-  background-color: #2e7d32;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  margin-top: 8px;
-  cursor: pointer;
+/* PRZYCISKI W TABELI */
+.action-buttons {
+  display: flex;
+  gap: 8px;
 }
 
-button:hover {
-  background-color: #27682a;
+/* PRZYCISKI OBOK SIEBIE W INNYCH MIEJSCACH */
+.button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* DROBNA STOPKA CZY OSTRZEŻENIA */
+.note {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 16px;
 }

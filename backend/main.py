@@ -12,7 +12,12 @@ app.include_router(auth_router, tags=["auth"])
 # CORS middleware dla React Native
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001"],  # dopasuj do swojego klienta mobilnego
+    allow_origins=[
+        "http://localhost:3000",  # web app
+        "http://127.0.0.1:3000",  # alternatywny web adres
+        "http://localhost:3001",  # mobile app (expo)
+        "http://192.168.100.3:3000"  # IP jeśli odpalasz web na telefonie przez sieć lokalną
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
