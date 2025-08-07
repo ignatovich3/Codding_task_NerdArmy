@@ -1,5 +1,3 @@
-Dziękuję za wyjaśnienia i przesłane zrzuty oraz strukturę katalogów. Na tej podstawie przygotowałem kompletne i profesjonalne **README.md**, dopasowane dokładnie do Twojego projektu:
-
 ---
 
 # 🌸 Codding\_task\_NerdArmy — Inwentaryzacja Kwiatów
