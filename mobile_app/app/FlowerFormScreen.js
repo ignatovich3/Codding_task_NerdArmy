@@ -1,181 +1,195 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
-  TextInput,
-  Button,
-  Alert,
-  StyleSheet,
   Text,
-  Platform,
+  FlatList,
+  Button,
+  StyleSheet,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/utils/api';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
+import { Picker } from '@react-native-picker/picker';
+import { useFocusEffect } from '@react-navigation/native';
 
-export default function FlowerFormScreen() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [status, setStatus] = useState('');
-  const [dateAdded, setDateAdded] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+export default function FlowerListScreen() {
+  const [flowers, setFlowers] = useState([]);
+  const [allFlowers, setAllFlowers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sortDate, setSortDate] = useState('dateNewest');
+  const [filterStatus, setFilterStatus] = useState('all');
+
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = await AsyncStorage.getItem('token');
-      if (!token) {
-        Alert.alert('Błąd', 'Musisz być zalogowany, aby dodać kwiat.');
-        router.replace('/login');
-      }
-    };
-    checkAuth();
-  }, []);
-
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || dateAdded;
-    setShowDatePicker(Platform.OS === 'ios');
-    setDateAdded(currentDate);
-  };
-
-  const handleAddFlower = async () => {
+  const fetchFlowers = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
-        Alert.alert('Błąd', 'Nie znaleziono tokena. Zaloguj się ponownie.');
-        router.replace('/login');
+        Alert.alert('Błąd', 'Musisz być zalogowany, aby zobaczyć listę kwiatów.');
         return;
       }
 
-      const payload = {
-        name,
-        description,
-        category,
-        quantity: parseInt(quantity),
-        status,
-        date_added: dateAdded.toISOString(),
-      };
-
-      await api.post('/flowers', payload, {
+      const response = await api.get('/flowers', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      Alert.alert('Sukces', 'Kwiat został dodany!');
-      setName('');
-      setDescription('');
-      setCategory('');
-      setQuantity('');
-      setStatus('');
-      setDateAdded(new Date());
+      setAllFlowers(response.data);
+      applySortAndFilter(response.data, sortDate, filterStatus);
     } catch (error) {
-      console.error('Błąd dodawania kwiata:', error.response?.data || error.message);
-      if (error.response?.status === 401) {
-        Alert.alert('Nieautoryzowany', 'Zaloguj się ponownie.');
-        router.replace('/login');
-      } else {
-        Alert.alert('Błąd', 'Nie udało się dodać kwiata.');
-      }
+      console.error('Błąd pobierania kwiatów:', error);
+      Alert.alert('Błąd', 'Nie udało się pobrać danych z serwera.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const applySortAndFilter = (data, sortDateOption, statusFilter) => {
+    let filtered = [...data];
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(flower =>
+        flower.status?.toLowerCase() === statusFilter
+      );
+    }
+
+    switch (sortDateOption) {
+      case 'dateNewest':
+        filtered.sort((a, b) => new Date(b.date_added) - new Date(a.date_added));
+        break;
+      case 'dateOldest':
+        filtered.sort((a, b) => new Date(a.date_added) - new Date(b.date_added));
+        break;
+    }
+
+    setFlowers(filtered);
+  };
+
+  const handleSortDateChange = (value) => {
+    setSortDate(value);
+    applySortAndFilter(allFlowers, value, filterStatus);
+  };
+
+  const handleStatusFilterChange = (value) => {
+    setFilterStatus(value);
+    applySortAndFilter(allFlowers, sortDate, value);
+  };
+
+  const handleDelete = async (id) => {
+    Alert.alert('Potwierdzenie', 'Czy na pewno chcesz usunąć ten kwiat?', [
+      { text: 'Anuluj', style: 'cancel' },
+      {
+        text: 'Usuń',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('token');
+            await api.delete(`/flowers/${id}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            Alert.alert('Usunięto', 'Kwiat został usunięty.');
+            fetchFlowers(); // reload
+          } catch (error) {
+            console.error('Błąd usuwania:', error);
+            Alert.alert('Błąd', 'Nie udało się usunąć kwiata.');
+          }
+        },
+      },
+    ]);
+  };
+
+  const handleEdit = (id) => {
+    router.push(`/screens/${id}`);
+  };
+
+  // 🔄 Odświeżanie po powrocie
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchFlowers();
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="Nazwa"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Opis"
-        value={description}
-        onChangeText={setDescription}
-        style={styles.input}
-      />
+      <Text style={styles.heading}>Sortuj według daty:</Text>
+      <Picker selectedValue={sortDate} onValueChange={handleSortDateChange} style={styles.picker}>
+        <Picker.Item label="Najnowsze" value="dateNewest" />
+        <Picker.Item label="Najstarsze" value="dateOldest" />
+      </Picker>
 
-      <Text style={styles.label}>Kategoria</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={category}
-          onValueChange={setCategory}
-        >
-          <Picker.Item label="Wybierz kategorię..." value="" />
-          <Picker.Item label="Piękny" value="Piękny" />
-          <Picker.Item label="Rzadki" value="Rzadki" />
-          <Picker.Item label="Chroniony" value="Chroniony" />
-        </Picker>
-      </View>
+      <Text style={styles.heading}>Filtruj według statusu:</Text>
+      <Picker selectedValue={filterStatus} onValueChange={handleStatusFilterChange} style={styles.picker}>
+        <Picker.Item label="Wszystkie" value="all" />
+        <Picker.Item label="Dostępny" value="dostępny" />
+        <Picker.Item label="Niedostępny" value="niedostępny" />
+      </Picker>
 
-      <TextInput
-        placeholder="Ilość"
-        value={quantity}
-        onChangeText={setQuantity}
-        keyboardType="numeric"
-        style={styles.input}
-      />
+      {loading ? (
+        <Text>Ładowanie...</Text>
+      ) : flowers.length === 0 ? (
+        <Text>Brak kwiatów do wyświetlenia.</Text>
+      ) : (
+        <FlatList
+          data={flowers}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text>{item.description}</Text>
+              <Text>Kategoria: {item.category}</Text>
+              <Text>Ilość: {item.quantity}</Text>
+              <Text>Status: {item.status}</Text>
+              <Text>
+                Data dodania:{' '}
+                {item.date_added
+                  ? new Date(item.date_added).toLocaleDateString()
+                  : 'brak'}
+              </Text>
 
-      <Text style={styles.label}>Status</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={status}
-          onValueChange={setStatus}
-        >
-          <Picker.Item label="Wybierz status..." value="" />
-          <Picker.Item label="Dostępny" value="dostępny" />
-          <Picker.Item label="Niedostępny" value="niedostępny" />
-        </Picker>
-      </View>
-
-      <Text style={styles.label}>Data dodania: {dateAdded.toLocaleDateString()}</Text>
-      <Button title="Wybierz datę" onPress={() => setShowDatePicker(true)} />
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={dateAdded}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
+              <View style={styles.buttonRow}>
+                <Button title="Edytuj" onPress={() => handleEdit(item.id)} />
+                <View style={{ width: 10 }} />
+                <Button title="Usuń" color="red" onPress={() => handleDelete(item.id)} />
+              </View>
+            </View>
+          )}
         />
       )}
-
-      <View style={{ marginTop: 20 }}>
-        <Button title="DODAJ KWIAT" onPress={handleAddFlower} />
-      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 16,
     backgroundColor: '#fff',
     flex: 1,
-    alignItems: 'stretch',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
+  heading: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  picker: {
     marginBottom: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+  },
+  item: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 10,
+  },
+  name: {
+    fontWeight: 'bold',
     fontSize: 16,
   },
-  pickerWrapper: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    marginBottom: 16,
-    overflow: 'hidden',
-  },
-  label: {
-    marginBottom: 6,
-    fontWeight: 'bold',
-    fontSize: 15,
+  buttonRow: {
+    flexDirection: 'row',
+    marginTop: 10,
   },
 });
