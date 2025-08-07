@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Aplikacja Kwiaty</title>
+  <style>
+    * {
+      font-family: sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+    .screen {
+      display: none;
+      padding: 20px;
+    }
+    .active {
+      display: block;
+    }
+    h1 {
+      text-align: center;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    input, select {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .alert {
+      padding: 10px;
+      background: #ffe2e2;
+      color: #900;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+    }
+    .bottom-nav button {
+      background: none;
+      border: none;
+      font-weight: bold;
+    }
+    .flower-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .flower-card h3 {
+      margin: 0 0 6px;
+    }
+    .flower-card p {
+      margin: 2px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Home Screen -->
+  <div id="home" class="screen active">
+    <h1>🌸 Witaj w aplikacji Kwiaty!</h1>
+    <button class="btn" onclick="showScreen('login')">Zaloguj się</button>
+    <button class="btn" onclick="showScreen('register')">Zarejestruj się</button>
+    <button class="btn" onclick="showScreen('list')">Zobacz listę kwiatów</button>
+    <button class="btn" onclick="showScreen('add')">Dodaj kwiat</button>
+    <div class="alert">🔒 Aby <b>dodać</b> lub <b>edytować</b> kwiaty, musisz być zalogowany!</div>
+  </div>
+
+  <!-- Login Screen -->
+  <div id="login" class="screen">
+    <h1>login</h1>
+    <input placeholder="Username">
+    <input placeholder="Hasło" type="password">
+    <button class="btn" onclick="showScreen('home')">ZALOGUJ SIĘ</button>
+  </div>
+
+  <!-- Register Screen -->
+  <div id="register" class="screen">
+    <h1>register</h1>
+    <input placeholder="Username">
+    <input placeholder="Email">
+    <input placeholder="Hasło" type="password">
+    <button class="btn" onclick="showScreen('home')">ZAREJESTRUJ SIĘ</button>
+  </div>
+
+  <!-- Add Flower -->
+  <div id="add" class="screen">
+    <h1>FlowerFormScreen</h1>
+    <input placeholder="Nazwa">
+    <input placeholder="Opis">
+    <label>Kategoria</label>
+    <select>
+      <option>Wybierz kategorię...</option>
+      <option>Piękny</option>
+      <option>Rzadki</option>
+    </select>
+    <input placeholder="Ilość">
+    <label>Status</label>
+    <select>
+      <option>Wybierz status...</option>
+      <option>dostępny</option>
+      <option>niedostępny</option>
+    </select>
+    <p>Data dodania: 07.08.2025</p>
+    <button class="btn">WYBIERZ DATĘ</button>
+    <button class="btn">DODAJ KWIAT</button>
+    <div class="alert">❗Błąd pobierania kwiatów: AxiosError: Network Error</div>
+  </div>
+
+  <!-- Flowers List -->
+  <div id="list" class="screen">
+    <h1>flowers</h1>
+    <label>Sortuj według daty:</label>
+    <select>
+      <option>Najnowsze</option>
+      <option>Najstarsze</option>
+    </select>
+
+    <label>Filtruj według statusu:</label>
+    <select>
+      <option>Wszystkie</option>
+      <option>Dostępny</option>
+      <option>Niedostępny</option>
+    </select>
+
+    <div class="flower-card">
+      <h3>Róża</h3>
+      <p>Opis: Piękna czerwona róża</p>
+      <p>Kategoria: Piękny</p>
+      <p>Status: dostępny</p>
+      <p>Ilość: 3</p>
+      <p>Data dodania: 2025-08-07</p>
+    </div>
+
+    <div class="flower-card">
+      <h3>Fiołek</h3>
+      <p>Opis: Chroniony kwiat leśny</p>
+      <p>Kategoria: Rzadki</p>
+      <p>Status: niedostępny</p>
+      <p>Ilość: 1</p>
+      <p>Data dodania: 2025-08-01</p>
+    </div>
+
+
+  </div>
+
+  <!-- Dolna Nawigacja -->
+  <div class="bottom-nav">
+    <button onclick="showScreen('home')">Home</button>
+    <button onclick="showScreen('list')">Explore</button>
+  </div>
+
+  <script>
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+</body>
+</html>
