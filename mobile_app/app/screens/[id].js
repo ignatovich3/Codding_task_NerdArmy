@@ -106,16 +106,17 @@ export default function EditFlowerScreen() {
       />
 
       <Text style={styles.label}>Kategoria</Text>
-      <Picker
-        selectedValue={category}
-        onValueChange={(value) => setCategory(value)}
-        style={styles.input}
-      >
-        <Picker.Item label="Wybierz kategorię..." value="" />
-        <Picker.Item label="Piękny" value="Piękny" />
-        <Picker.Item label="Rzadki" value="Rzadki" />
-        <Picker.Item label="Chroniony" value="Chroniony" />
-      </Picker>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={category}
+          onValueChange={(value) => setCategory(value)}
+        >
+          <Picker.Item label="Wybierz kategorię..." value="" />
+          <Picker.Item label="Piękny" value="Piękny" />
+          <Picker.Item label="Rzadki" value="Rzadki" />
+          <Picker.Item label="Chroniony" value="Chroniony" />
+        </Picker>
+      </View>
 
       <TextInput
         placeholder="Ilość"
@@ -124,12 +125,18 @@ export default function EditFlowerScreen() {
         keyboardType="numeric"
         style={styles.input}
       />
-      <TextInput
-        placeholder="Status"
-        value={status}
-        onChangeText={setStatus}
-        style={styles.input}
-      />
+
+      <Text style={styles.label}>Status</Text>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={status}
+          onValueChange={(value) => setStatus(value)}
+        >
+          <Picker.Item label="Wybierz status..." value="" />
+          <Picker.Item label="Dostępny" value="dostępny" />
+          <Picker.Item label="Niedostępny" value="niedostępny" />
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Data dodania: {dateAdded.toLocaleDateString()}</Text>
       <Button title="Zmień datę" onPress={() => setShowDatePicker(true)} />
@@ -156,19 +163,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  input: {
-    borderBottomWidth: 1,
-    marginBottom: 15,
-    padding: 10,
-  },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
   label: {
-    marginBottom: 5,
+    marginBottom: 6,
     fontWeight: 'bold',
-    marginTop: 10,
+    fontSize: 15,
   },
 });

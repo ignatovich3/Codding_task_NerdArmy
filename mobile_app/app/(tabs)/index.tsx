@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
@@ -10,11 +10,21 @@ export default function HomeScreen() {
       <View style={styles.topSection}>
         <Text style={styles.title}>🌸 Witaj w aplikacji Kwiaty!</Text>
 
-        <Button title="Zaloguj się" onPress={() => router.push('/login')} />
-        <Button title="Zarejestruj się" onPress={() => router.push('/register')} />
-        <View style={styles.spacer} />
-        <Button title="Zobacz listę kwiatów" onPress={() => router.push('/flowers')} />
-        <Button title="Dodaj kwiat" onPress={() => router.push('/FlowerFormScreen')} />
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/login')}>
+          <Text style={styles.buttonText}>Zaloguj się</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/register')}>
+          <Text style={styles.buttonText}>Zarejestruj się</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/flowers')}>
+          <Text style={styles.buttonText}>Zobacz listę kwiatów</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/FlowerFormScreen')}>
+          <Text style={styles.buttonText}>Dodaj kwiat</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.footerNote}>
@@ -44,8 +54,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '700',
   },
-  spacer: {
-    height: 10,
+  button: {
+    backgroundColor: '#007bff', // NIEBIESKI
+    paddingVertical: 14,
+    borderRadius: 6,
+    marginVertical: 4,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: '600',
   },
   footerNote: {
     backgroundColor: '#ffe4e1',
@@ -62,3 +81,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+

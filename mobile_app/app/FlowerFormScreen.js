@@ -24,7 +24,6 @@ export default function FlowerFormScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const router = useRouter();
 
-  // 🔒 Wymuszenie logowania
   useEffect(() => {
     const checkAuth = async () => {
       const token = await AsyncStorage.getItem('token');
@@ -60,7 +59,7 @@ export default function FlowerFormScreen() {
         date_added: dateAdded.toISOString(),
       };
 
-      const response = await api.post('/flowers', payload, {
+      await api.post('/flowers', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -100,16 +99,17 @@ export default function FlowerFormScreen() {
       />
 
       <Text style={styles.label}>Kategoria</Text>
-      <Picker
-        selectedValue={category}
-        onValueChange={setCategory}
-        style={styles.input}
-      >
-        <Picker.Item label="Wybierz kategorię..." value="" />
-        <Picker.Item label="Piękny" value="Piękny" />
-        <Picker.Item label="Rzadki" value="Rzadki" />
-        <Picker.Item label="Chroniony" value="Chroniony" />
-      </Picker>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={category}
+          onValueChange={setCategory}
+        >
+          <Picker.Item label="Wybierz kategorię..." value="" />
+          <Picker.Item label="Piękny" value="Piękny" />
+          <Picker.Item label="Rzadki" value="Rzadki" />
+          <Picker.Item label="Chroniony" value="Chroniony" />
+        </Picker>
+      </View>
 
       <TextInput
         placeholder="Ilość"
@@ -120,15 +120,16 @@ export default function FlowerFormScreen() {
       />
 
       <Text style={styles.label}>Status</Text>
-      <Picker
-        selectedValue={status}
-        onValueChange={setStatus}
-        style={styles.input}
-      >
-        <Picker.Item label="Wybierz status..." value="" />
-        <Picker.Item label="Dostępny" value="dostępny" />
-        <Picker.Item label="Niedostępny" value="niedostępny" />
-      </Picker>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={status}
+          onValueChange={setStatus}
+        >
+          <Picker.Item label="Wybierz status..." value="" />
+          <Picker.Item label="Dostępny" value="dostępny" />
+          <Picker.Item label="Niedostępny" value="niedostępny" />
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Data dodania: {dateAdded.toLocaleDateString()}</Text>
       <Button title="Wybierz datę" onPress={() => setShowDatePicker(true)} />
@@ -154,14 +155,27 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
     flex: 1,
+    alignItems: 'stretch',
   },
   input: {
-    borderBottomWidth: 1,
-    marginBottom: 15,
-    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    marginBottom: 16,
+    overflow: 'hidden',
   },
   label: {
-    marginTop: 10,
+    marginBottom: 6,
     fontWeight: 'bold',
+    fontSize: 15,
   },
 });
