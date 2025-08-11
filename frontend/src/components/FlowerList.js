@@ -14,10 +14,10 @@ const FlowerList = () => {
       if (Array.isArray(flowerData)) {
         setFlowers(flowerData);
       } else {
-        console.error("Nieprawidłowy format danych kwiatów:", response);
+        console.error("Invalid flower data format:", response);
       }
     } catch (err) {
-      console.error("Błąd pobierania kwiatów", err);
+      console.error("Error fetching flowers", err);
     }
   };
 
@@ -26,32 +26,32 @@ const FlowerList = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Czy na pewno chcesz usunąć ten kwiat?")) return;
+    if (!window.confirm("Are you sure you want to delete this flower?")) return;
     try {
       await deleteFlower(id);
       loadFlowers();
     } catch (err) {
-      alert("Błąd podczas usuwania");
+      alert("Error deleting flower");
     }
   };
 
   return (
     <div className="table-container">
       <div className="flex justify-between items-center mb-4">
-        <h2>🌿 Lista kwiatów</h2>
+        <h2>🌿 Flower List</h2>
         <button className="btn-green" onClick={() => navigate("/add")}>
-          ➕ Dodaj kwiat
+          ➕ Add Flower
         </button>
       </div>
 
       <table>
         <thead>
           <tr>
-            <th>Nazwa</th>
-            <th>Kategoria</th>
-            <th>Ilość</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
             <th>Status</th>
-            <th>Akcje</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -68,13 +68,13 @@ const FlowerList = () => {
                       className="btn-edit"
                       onClick={() => navigate(`/edit/${flower.id}`)}
                     >
-                      Edytuj
+                      Edit
                     </button>
                     <button
                       className="btn-delete"
                       onClick={() => handleDelete(flower.id)}
                     >
-                      Usuń
+                      Delete
                     </button>
                   </div>
                 </td>
@@ -83,7 +83,7 @@ const FlowerList = () => {
           ) : (
             <tr>
               <td colSpan="5" className="text-center text-gray-500 p-4">
-                Brak danych do wyświetlenia.
+                No data to display.
               </td>
             </tr>
           )}

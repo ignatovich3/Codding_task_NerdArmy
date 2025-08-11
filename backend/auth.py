@@ -17,7 +17,7 @@ from crud import get_user_by_username
 from fastapi import APIRouter
 router = APIRouter()
 
-# --- Tymczasowy klucz do testów. NIE używaj w produkcji! ---
+
 SECRET_KEY = "super_testowy_klucz"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30

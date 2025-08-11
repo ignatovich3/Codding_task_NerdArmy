@@ -14,6 +14,8 @@ const FlowerForm = () => {
 
   const navigate = useNavigate();
 
+  const categories = ["Beautiful", "Rare", "Protected"]; // Array of categories for the dropdown menu
+
   const handleChange = (e) => {
     setFlower({ ...flower, [e.target.name]: e.target.value });
   };
@@ -24,19 +26,19 @@ const FlowerForm = () => {
       await createFlower(flower);
       navigate("/list");
     } catch (err) {
-      alert("Błąd podczas dodawania kwiatu");
+      alert("Error while adding the flower");
     }
   };
 
   return (
     <div className="centered-form-container">
       <div className="form-box">
-        <h2>Dodaj / Edytuj Kwiat</h2>
+        <h2>Add</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
-            placeholder="Nazwa kwiatu"
+            placeholder="Flower Name"
             value={flower.name}
             onChange={handleChange}
             required
@@ -44,28 +46,34 @@ const FlowerForm = () => {
 
           <textarea
             name="description"
-            placeholder="Opis"
+            placeholder="Description"
             value={flower.description}
             onChange={handleChange}
             required
           />
 
-          <input
-            type="text"
+          <select
             name="category"
-            placeholder="Kategoria"
             value={flower.category}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Category</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
 
           <input
             type="number"
             name="quantity"
-            placeholder="Ilość"
+            placeholder="Quantity"
             value={flower.quantity}
             onChange={handleChange}
             required
+            min="0" // Prevents negative numbers
           />
 
           <select
@@ -74,10 +82,10 @@ const FlowerForm = () => {
             onChange={handleChange}
             required
           >
-            <option value="">Status zapasu</option>
-            <option value="Dostępny">Dostępny</option>
-            <option value="Mało">Mało</option>
-            <option value="Brak">Brak</option>
+            <option value="">Stock Status</option>
+            <option value="Available">Available</option>
+            <option value="Low">Low</option>
+            <option value="Out of Stock">Out of Stock</option>
           </select>
 
           <input
@@ -87,7 +95,7 @@ const FlowerForm = () => {
             onChange={handleChange}
           />
 
-          <button type="submit">Zapisz</button>
+          <button type="submit">Save</button>
         </form>
       </div>
     </div>

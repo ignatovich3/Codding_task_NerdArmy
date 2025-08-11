@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Button,
-  StyleSheet,
-  Alert,
-} from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, FlatList, Button, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/utils/api';
 import { useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function FlowerListScreen() {
   const [flowers, setFlowers] = useState([]);
@@ -28,13 +22,9 @@ export default function FlowerListScreen() {
         Alert.alert('Błąd', 'Musisz być zalogowany, aby zobaczyć listę kwiatów.');
         return;
       }
-
       const response = await api.get('/flowers', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       setAllFlowers(response.data);
       applySortAndFilter(response.data, sortDate, filterStatus);
     } catch (error) {
@@ -49,20 +39,23 @@ export default function FlowerListScreen() {
     let filtered = [...data];
 
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(flower =>
-        flower.status?.toLowerCase() === statusFilter
+      filtered = filtered.filter(
+        (flower) => (flower.status || '').toLowerCase() === statusFilter
       );
     }
 
     switch (sortDateOption) {
       case 'dateNewest':
-        filtered.sort((a, b) => new Date(b.date_added) - new Date(a.date_added));
+        filtered.sort(
+          (a, b) => new Date(b.date_added) - new Date(a.date_added)
+        );
         break;
       case 'dateOldest':
-        filtered.sort((a, b) => new Date(a.date_added) - new Date(b.date_added));
+        filtered.sort(
+          (a, b) => new Date(a.date_added) - new Date(b.date_added)
+        );
         break;
     }
-
     setFlowers(filtered);
   };
 
@@ -86,12 +79,10 @@ export default function FlowerListScreen() {
           try {
             const token = await AsyncStorage.getItem('token');
             await api.delete(`/flowers/${id}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+              headers: { Authorization: `Bearer ${token}` },
             });
             Alert.alert('Usunięto', 'Kwiat został usunięty.');
-            fetchFlowers(); // reload
+            fetchFlowers();
           } catch (error) {
             console.error('Błąd usuwania:', error);
             Alert.alert('Błąd', 'Nie udało się usunąć kwiata.');
@@ -102,23 +93,36 @@ export default function FlowerListScreen() {
   };
 
   const handleEdit = (id) => {
+    // ⬇️ ważne: przejście na /flowers/[id]
     router.push(`/screens/${id}`);
   };
 
-  useEffect(() => {
-    fetchFlowers();
-  }, []);
+  // refetch po powrocie na ekran
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchFlowers();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Sortuj według daty:</Text>
-      <Picker selectedValue={sortDate} onValueChange={handleSortDateChange} style={styles.picker}>
+      <Picker
+        selectedValue={sortDate}
+        onValueChange={handleSortDateChange}
+        style={styles.picker}
+      >
         <Picker.Item label="Najnowsze" value="dateNewest" />
         <Picker.Item label="Najstarsze" value="dateOldest" />
       </Picker>
 
       <Text style={styles.heading}>Filtruj według statusu:</Text>
-      <Picker selectedValue={filterStatus} onValueChange={handleStatusFilterChange} style={styles.picker}>
+      <Picker
+        selectedValue={filterStatus}
+        onValueChange={handleStatusFilterChange}
+        style={styles.picker}
+      >
         <Picker.Item label="Wszystkie" value="all" />
         <Picker.Item label="Dostępny" value="dostępny" />
         <Picker.Item label="Niedostępny" value="niedostępny" />
@@ -135,7 +139,7 @@ export default function FlowerListScreen() {
           renderItem={({ item }) => (
             <View style={styles.item}>
               <Text style={styles.name}>{item.name}</Text>
-              <Text>{item.description}</Text>
+              {item.description ? <Text>{item.description}</Text> : null}
               <Text>Kategoria: {item.category}</Text>
               <Text>Ilość: {item.quantity}</Text>
               <Text>Status: {item.status}</Text>
@@ -149,7 +153,11 @@ export default function FlowerListScreen() {
               <View style={styles.buttonRow}>
                 <Button title="Edytuj" onPress={() => handleEdit(item.id)} />
                 <View style={{ width: 10 }} />
-                <Button title="Usuń" color="red" onPress={() => handleDelete(item.id)} />
+                <Button
+                  title="Usuń"
+                  color="red"
+                  onPress={() => handleDelete(item.id)}
+                />
               </View>
             </View>
           )}
@@ -160,31 +168,15 @@ export default function FlowerListScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  heading: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  picker: {
-    marginBottom: 16,
-  },
+  container: { padding: 16, backgroundColor: '#fff', flex: 1 },
+  heading: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
+  picker: { marginBottom: 16 },
   item: {
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     marginBottom: 10,
   },
-  name: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
+  name: { fontWeight: 'bold', fontSize: 16 },
+  buttonRow: { flexDirection: 'row', marginTop: 10 },
 });

@@ -6,10 +6,17 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // To hold any error messages
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    // Basic validation for password length
+    if (password.length < 6) {
+      setError("Hasło musi zawierać co najmniej 6 znaków.");
+      return;
+    }
 
     try {
       await registerUser({ username, email, password });
@@ -46,7 +53,11 @@ export default function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            minLength="6" // Ensures the password is at least 6 characters
           />
+
+          {error && <p className="error-message">{error}</p>} {/* Display error message if password is too short */}
+
           <button type="submit">Zarejestruj się</button>
         </form>
       </div>

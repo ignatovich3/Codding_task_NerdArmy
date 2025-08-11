@@ -1,98 +1,96 @@
 
+# 🌸 **Codding\_task\_NerdArmy — Flower Inventory Management**
 
-# 🌸 Codding\_task\_NerdArmy — Inwentaryzacja Kwiatów
+A complete system for managing flower inventory, built in a **full-stack** architecture:
 
-Kompletny system do zarządzania inwentarzem kwiatów, zbudowany w architekturze **full-stack**:
-
-* 💻 **Frontend webowy** – React
-* 📱 **Aplikacja mobilna** – React Native + Expo
+* 💻 **Web Frontend** – React
+* 📱 **Mobile App** – React Native + Expo
 * ⚙️ **Backend** – FastAPI + PostgreSQL
 
 ---
 
-## 🧱 Zawartość repozytorium
+## 🧱 **Repository Structure**
 
 ```
 project-root/
 │
-├── backend/         # FastAPI backend + baza PostgreSQL
-├── frontend/        # Webowa aplikacja React
-├── mobile_app/      # Aplikacja mobilna React Native (Expo)
-└── mockups/         # Makiety ekranów w HTML
+├── backend/         # FastAPI backend + PostgreSQL database
+├── frontend/        # React web application
+├── mobile_app/      # React Native mobile application (Expo)
+└── mockups/         # HTML screen mockups
 ```
 
 ---
 
-## 🛠️ Technologie
+## 🛠️ **Technologies**
 
-| Warstwa  | Stos technologiczny                            |
+| Layer    | Technology Stack                               |
 | -------- | ---------------------------------------------- |
 | Backend  | FastAPI, PostgreSQL, SQLAlchemy, JWT, Pydantic |
 | Frontend | React, React Router, Axios                     |
-| Mobilna  | React Native, Expo, Axios, React Navigation    |
+| Mobile   | React Native, Expo, Axios, React Navigation    |
 
 ---
 
-## ⚙️ Backend (FastAPI + PostgreSQL)
+## ⚙️ **Backend (FastAPI + PostgreSQL)**
 
-### 📁 Struktura
+### 📁 **Structure**
 
 ```
 backend/
-├── main.py               # Główne wejście do aplikacji
-├── models.py             # Modele SQLAlchemy
-├── schemas.py            # Schematy Pydantic
-├── crud.py               # Logika biznesowa
-├── auth.py               # Autoryzacja i JWT
-├── database.py           # Konfiguracja połączenia z DB
-├── requirements.txt      # Wymagania pip
-├── .env                  # Zmienne środowiskowe (np. DB URL, JWT_SECRET)
+├── main.py               # Main entry point for the app
+├── models.py             # SQLAlchemy models
+├── schemas.py            # Pydantic schemas
+├── crud.py               # Business logic
+├── auth.py               # Authentication and JWT
+├── database.py           # Database connection configuration
+├── requirements.txt      # Pip dependencies
+├── .env                  # Environment variables (e.g., DB URL, JWT_SECRET)
 ```
 
+---
+
+## 🧩 **How to Set Up PostgreSQL Locally**
+
+To run the application with a working PostgreSQL database locally, follow these steps:
+
+### ✅ 1. Install PostgreSQL
+
+* Download and install PostgreSQL: [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
+* During installation:
+
+  * Save the username (e.g., `postgres`)
+  * Save the password (e.g., `admin`)
+  * Recommended: Install **pgAdmin** (a graphical tool for managing the database)
 
 ---
 
+### ✅ 2. Create a Database
 
-## 🧩 Jak skonfigurować bazę danych PostgreSQL lokalnie
-
-Aby uruchomić aplikację z działającą bazą danych PostgreSQL lokalnie, wykonaj poniższe kroki:
-
-### ✅ 1. Zainstaluj PostgreSQL
-
-- Pobierz i zainstaluj PostgreSQL: https://www.postgresql.org/download/
-- Podczas instalacji:
-  - Zapisz nazwę użytkownika (np. `postgres`)
-  - Zapisz hasło (np. `admin`)
-  - Zalecane: zainstaluj pgAdmin (graficzne narzędzie do zarządzania bazą)
-
----
-
-### ✅ 2. Stwórz bazę danych
-
-####  Przez terminal (psql)
+#### Through terminal (psql)
 
 ```bash
 psql -U postgres
 CREATE DATABASE flowers_db;
-````
-
----
-
-### ✅ 3. Skonfiguruj plik `.env` (w katalogu `backend/`)
-
-Utwórz plik `.env` (jeśli go nie ma) i wklej:
-
-```env
-DATABASE_URL=postgresql://postgres:twoje_haslo@localhost:5432/flowers_db
 ```
 
-> Upewnij się, że hasło i dane połączenia są zgodne z tymi, które ustawiłeś przy instalacji PostgreSQL.
+---
+
+### ✅ 3. Configure the `.env` File (in the `backend/` folder)
+
+Create a `.env` file (if not present) and insert:
+
+```env
+DATABASE_URL=postgresql://postgres:your_password@localhost:5432/flowers_db
+```
+
+> Make sure the password and connection data match what you set during PostgreSQL installation.
 
 ---
 
-### ✅ 4. Uruchom backend
+### ✅ 4. Run the Backend
 
-Zainstaluj zależności i odpal backend lokalnie:
+Install dependencies and run the backend locally:
 
 ```bash
 cd backend
@@ -102,7 +100,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Dla aplikacji mobilnej uruchom backend na adresie dostępnym z sieci lokalnej:
+For the mobile app, run the backend at a network-accessible address:
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
@@ -110,43 +108,41 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
+### 🧪 **6. Test Connection**
 
-
-### 🧪 6. Testowanie połączenia
-
-* Otwórz przeglądarkę i wejdź na: [http://localhost:8000/docs](http://localhost:8000/docs)
-* Możesz testować tam wszystkie endpointy dostępne w API
+* Open your browser and go to: [http://localhost:8000/docs](http://localhost:8000/docs)
+* You can test all available API endpoints there.
 
 ---
 
-🔐 Autoryzacja
+🔐 **Authentication**
 
-* JWT Token (nagłówek: `Authorization: Bearer <token>`)
-* Token generowany po zalogowaniu (endpoint: `/login`)
+* JWT Token (header: `Authorization: Bearer <token>`)
+* Token generated upon login (endpoint: `/login`)
 
-### 📚 Dokumentacja Swagger
+### 📚 **Swagger Documentation**
 
 * Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 * ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ---
 
-## 🌐 Frontend Web (React)
+## 🌐 **Web Frontend (React)**
 
-### 📁 Struktura
+### 📁 **Structure**
 
 ```
 frontend/
 ├── src/
-│   ├── components/      # Komponenty UI
-│   ├── App.js           # Routery + Layout
-│   ├── api.js           # Połączenia HTTP (axios)
+│   ├── components/      # UI Components
+│   ├── App.js           # Routers + Layout
+│   ├── api.js           # HTTP connections (Axios)
 │   └── styles.css
 ├── public/
 ├── package.json
 ```
 
-### ▶️ Uruchomienie frontendu
+### ▶️ **Running the Frontend**
 
 ```bash
 cd frontend
@@ -154,56 +150,52 @@ npm install
 npm start
 ```
 
-Dostępne pod: [http://localhost:3000](http://localhost:3000)
+Available at: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 📱 Aplikacja mobilna (React Native + Expo)
+## 📱 **Mobile Application (React Native + Expo)**
 
-### 📁 Struktura
+### 📁 **Structure**
 
 ```
 mobile_app/
-├── app/                 # Ekrany aplikacji
-├── components/          # Komponenty wielokrotnego użytku
-├── utils/               # Konfiguracje (np. API)
-├── app.json             # Konfiguracja Expo
+├── app/                 # App Screens
+├── components/          # Reusable Components
+├── utils/               # Configurations (e.g., API)
+├── app.json             # Expo configuration
 ├── expo-env.d.ts
 ```
-Oczywiście! Poniżej masz gotowy fragment w formacie **Markdown**, który możesz wkleić do pliku `README.md` (np. do sekcji konfiguracji aplikacji mobilnej):
-
-
-
 
 ---
 
-## 🌐 Konfiguracja adresu IP w aplikacji mobilnej (`utils/api.js`)
+## 🌐 **Configure IP Address in the Mobile App (`utils/api.js`)**
 
-Aby aplikacja mobilna mogła komunikować się z backendem działającym lokalnie, należy skonfigurować poprawny adres IP komputera w pliku `api.js`.
+For the mobile app to communicate with the locally running backend, you need to configure the correct IP address of your computer in the `api.js` file.
 
-> 🔁 Domyślny kod wygląda tak:
+> 🔁 Default code looks like this:
 
 ```js
 // utils/api.js
-const API_URL = 'http://192.168.100.3:8000'; 
-````
+const API_URL = 'http://192.168.100.3:8000';
+```
 
-### ✅ Jak ustawić własny adres IP?
+### ✅ **How to Set Your Own IP Address?**
 
-1. **Otwórz terminal (Windows)** i wpisz:
+1. **Open terminal (Windows)** and type:
 
 ```bash
 ipconfig
 ```
 
-2. Odszukaj swój adres IP lokalny (np. `192.168.0.15`) – zazwyczaj pod `IPv4 Address`.
-3. Skopiuj ten adres i wklej go zamiast `192.168.100.3`:
+2. Look for your local IP address (e.g., `192.168.0.15`) — usually under `IPv4 Address`.
+3. Copy this address and replace `192.168.100.3` with it:
 
 ```js
 const API_URL = 'http://192.168.0.15:8000';
 ```
 
-4. Upewnij się, że backend jest uruchomiony z flagą `--host 0.0.0.0`:
+4. Ensure the backend is running with the `--host 0.0.0.0` flag:
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
@@ -211,16 +203,15 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
+### ▶️ **Running the Mobile App**
 
-### ▶️ Uruchomienie aplikacji mobilnej
-
-1. Zainstaluj Expo CLI (jeśli nie masz):
+1. Install **Expo CLI** (if you don’t have it):
 
 ```bash
 npm install -g expo-cli
 ```
 
-2. Odpal aplikację:
+2. Run the app:
 
 ```bash
 cd mobile_app
@@ -228,44 +219,39 @@ npm install
 npx expo start
 ```
 
-3. Zeskanuj QR kod aplikacją **Expo Go** na telefonie.
-
-
-
+3. Scan the QR code with the **Expo Go** app on your phone.
 
 ---
 
-## 📷 Makiety / Prototypy
-Znajdują się w katalogu `mockups/` w formie HTML. Można je otworzyć w przeglądarce i przeklikiwać między ekranami aplikacji.
+## 📷 **Mockups / Prototypes**
 
-
----
-
-## 🧠 Architektura bazy danych
-
-* Tabela `users`: id, username, email, hashed\_password
-* Tabela `flowers`: id, name, description, category, quantity, status, user\_id (FK)
+Available in the `mockups/` folder as HTML files. You can open them in a browser and click through the app screens.
 
 ---
 
-## ✅ Funkcjonalności
+## 🧠 **Database Architecture**
 
-| Funkcja                       | Web | Mobile |
-| ----------------------------- | --- | ------ |
-| 🔍 Przeglądanie listy kwiatów | ✅   | ✅      |
-| ➕ Dodawanie nowych kwiatów    | ✅   | ✅      |
-| 🖊️ Edycja kwiatów            | ✅   | ✅      |
-| ❌ Usuwanie kwiatów            | ✅   | ✅      |
-| 🔒 Logowanie JWT              | ✅   | ✅      |
+* **Users Table**: id, username, email, hashed\_password
+* **Flowers Table**: id, name, description, category, quantity, status, user\_id (FK)
 
 ---
 
-## ✍️ Autor
+## ✅ **Features**
 
-Projekt stworzony w ramach zadania
+| Feature               | Web | Mobile |
+| --------------------- | --- | ------ |
+| 🔍 Browse flower list | ✅   | ✅      |
+| ➕ Add new flowers     | ✅   | ✅      |
+| 🖊️ Edit flowers      | ✅   | ✅      |
+| ❌ Delete flowers      | ✅   | ✅      |
+| 🔒 JWT Login          | ✅   | ✅      |
+
+---
+
+## ✍️ **Author**
+
+Project created as part of the task
 **Coding Task — NerdArmy**
-Autor: *Sofiya Ignatovich*
+Author: *Sofiya Ignatovich*
 
 ---
-
-

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api"; // twoja funkcja z api.js
+import { loginUser } from "../api"; // Your function from api.js
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -13,34 +13,34 @@ export default function LoginPage() {
     try {
       const response = await loginUser({ username, password });
       localStorage.setItem("token", response.data.access_token);
-      alert("Zalogowano pomyślnie!");
+      alert("Successfully logged in!");
       navigate("/");
     } catch (error) {
-      console.error("Błąd logowania:", error.response?.data || error.message);
-      alert("Niepoprawne dane logowania.");
+      console.error("Login error:", error.response?.data || error.message);
+      alert("Incorrect login credentials.");
     }
   };
 
   return (
     <div className="centered-form-container">
       <div className="form-box">
-        <h2>Logowanie</h2>
+        <h2>Login</h2>
         <form onSubmit={handleLogin}>
           <input
             type="text"
-            placeholder="Nazwa użytkownika"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
           <input
             type="password"
-            placeholder="Hasło"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">Zaloguj się</button>
+          <button type="submit">Log In</button>
         </form>
       </div>
     </div>

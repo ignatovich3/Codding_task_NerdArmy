@@ -5,23 +5,23 @@ const HomePage = () => {
   return (
     <div className="centered-form-container">
       <div className="home-box">
-        <h1>🌸 Inwentaryzacja Kwiatów</h1>
+        <h1>🌸 Flower Inventory</h1>
         <p>
-          Witamy w aplikacji do zarządzania kolekcją kwiatów. Możesz przeglądać, dodawać,
-          edytować i usuwać kwiaty — po zalogowaniu się.
+          Welcome to the flower collection management app. You can browse, add,
+          edit, and delete flowers — after logging in.
         </p>
 
         <div className="button-row">
           <Link to="/login">
-            <button>Zaloguj się</button>
+            <button>Login</button>
           </Link>
           <Link to="/register">
-            <button className="outline">Zarejestruj się</button>
+            <button className="outline">Register</button>
           </Link>
         </div>
 
         <p className="note">
-          🔒 Aby <strong>dodawać</strong> lub <strong>edytować</strong> kwiaty, musisz być zalogowany.
+          🔒 To <strong>add</strong> or <strong>edit</strong> flowers, you need to be logged in.
         </p>
       </div>
     </div>

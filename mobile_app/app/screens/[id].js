@@ -31,32 +31,26 @@ export default function EditFlowerScreen() {
       try {
         const token = await AsyncStorage.getItem('token');
         const response = await api.get(`/flowers/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
         const flower = response.data;
-        setName(flower.name);
-        setDescription(flower.description);
-        setCategory(flower.category);
-        setQuantity(flower.quantity.toString());
-        setStatus(flower.status);
-        if (flower.date_added) {
-          setDateAdded(new Date(flower.date_added));
-        }
+        setName(flower.name || '');
+        setDescription(flower.description || '');
+        setCategory(flower.category || '');
+        setQuantity(String(flower.quantity ?? ''));
+        setStatus(flower.status || '');
+        if (flower.date_added) setDateAdded(new Date(flower.date_added));
       } catch (error) {
         console.error('Błąd ładowania kwiatu:', error);
         Alert.alert('Błąd', 'Nie udało się załadować danych kwiatu.');
       }
     };
-
     fetchFlower();
   }, [id]);
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateChange = (_event, selectedDate) => {
     const currentDate = selectedDate || dateAdded;
-    setShowDatePicker(Platform.OS === 'ios');
+    if (Platform.OS !== 'ios') setShowDatePicker(false);
     setDateAdded(currentDate);
   };
 
@@ -69,19 +63,16 @@ export default function EditFlowerScreen() {
           name,
           description,
           category,
-          quantity: parseInt(quantity),
+          quantity: parseInt(quantity, 10),
           status,
           date_added: dateAdded.toISOString(),
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       Alert.alert('Sukces', 'Zmieniono dane kwiatu!');
-      router.back();
+      // ⬇️ kluczowe: wracamy/odświeżamy listę
+      router.replace('/flowers');
     } catch (error) {
       console.error('Błąd zapisu:', error);
       Alert.alert('Błąd', 'Nie udało się zapisać zmian.');
@@ -138,7 +129,9 @@ export default function EditFlowerScreen() {
         </Picker>
       </View>
 
-      <Text style={styles.label}>Data dodania: {dateAdded.toLocaleDateString()}</Text>
+      <Text style={styles.label}>
+        Data dodania: {dateAdded.toLocaleDateString()}
+      </Text>
       <Button title="Zmień datę" onPress={() => setShowDatePicker(true)} />
 
       {showDatePicker && (
@@ -158,35 +151,15 @@ export default function EditFlowerScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
+  container: { padding: 20, backgroundColor: '#fff', flex: 1 },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
+    borderWidth: 1, borderColor: '#ccc', borderRadius: 6,
+    marginBottom: 16, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16,
   },
   pickerWrapper: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    marginBottom: 16,
-    overflow: 'hidden',
+    borderWidth: 1, borderColor: '#ccc', borderRadius: 6,
+    marginBottom: 16, overflow: 'hidden',
   },
-  label: {
-    marginBottom: 6,
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
+  label: { marginBottom: 6, fontWeight: 'bold', fontSize: 15 },
 });

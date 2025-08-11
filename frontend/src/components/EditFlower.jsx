@@ -12,7 +12,7 @@ const EditFlower = () => {
 
   const token = localStorage.getItem('token');
 
-  const categories = ['Piękny', 'Rzadki', 'Chroniony'];
+  const categories = ['Beautiful', 'Rare', 'Protected'];
 
   useEffect(() => {
     const fetchFlower = async () => {
@@ -31,7 +31,7 @@ const EditFlower = () => {
         setFlower(data);
         setLoading(false);
       } catch (err) {
-        setError('Nie udało się pobrać kwiatu lub nie masz dostępu.');
+        setError('Failed to fetch flower or you do not have access.');
         setLoading(false);
       }
     };
@@ -57,24 +57,24 @@ const EditFlower = () => {
       );
       navigate('/list');
     } catch (err) {
-      setError('Błąd zapisu zmian.');
+      setError('Error saving changes.');
     }
   };
 
-  if (loading) return <p>Ładowanie...</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
   if (!flower) return null;
 
   return (
     <div className="centered-form-container">
       <div className="form-box">
-        <h2>Edytuj kwiat</h2>
+        <h2>Edit Flower</h2>
         <form onSubmit={handleSubmit}>
           <input
             name="name"
             value={flower.name}
             onChange={handleChange}
-            placeholder="Nazwa"
+            placeholder="Name"
             required
           />
 
@@ -84,7 +84,7 @@ const EditFlower = () => {
             onChange={handleChange}
             required
           >
-            <option value="">Wybierz kategorię</option>
+            <option value="">Select Category</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -97,7 +97,7 @@ const EditFlower = () => {
             type="number"
             value={flower.quantity}
             onChange={handleChange}
-            placeholder="Ilość"
+            placeholder="Quantity"
             required
           />
 
@@ -107,10 +107,10 @@ const EditFlower = () => {
             onChange={handleChange}
             required
           >
-            <option value="">Status zapasu</option>
-            <option value="Dostępny">Dostępny</option>
-            <option value="Mało">Mało</option>
-            <option value="Brak">Brak</option>
+            <option value="">Stock Status</option>
+            <option value="Available">Available</option>
+            <option value="Low">Low</option>
+            <option value="Out of Stock">Out of Stock</option>
           </select>
 
           <input
@@ -120,7 +120,7 @@ const EditFlower = () => {
             onChange={handleChange}
           />
 
-          <button type="submit">Zapisz zmiany</button>
+          <button type="submit">Save Changes</button>
         </form>
       </div>
     </div>
